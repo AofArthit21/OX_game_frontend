@@ -4,7 +4,7 @@
   <a href="https://nextjs.org" target="_blank"><img src="https://assets.vercel.com/image/upload/v1662861340/nextjs/Icon_dark.png" width="120" alt="Next.js Logo" /></a>
 </p>
 
-Backend: [OX Game Backend (NestJS)](Link_to_your_backend_repo_here)
+Backend: [OX Game Backend (NestJS)](https://github.com/AofArthit21/OX_game_backend)
 
 โปรเจกต์นี้คือส่วน **Frontend** สำหรับแอปพลิเคชันเกม OX WebApp สร้างด้วย [Next.js App Router](https://nextjs.org/docs/app) โดยใช้ **Tailwind CSS** และ **Zustand** ในการจัดการสถานะ เพื่อเชื่อมต่อกับ NestJS Backend
 
