@@ -5,7 +5,10 @@ import { useGameStore } from "@/store/gameStore";
 
 // URL ของ NestJS Backend
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_NEST_API_BASE_URL || "http://localhost:3000";
+  process.env.NEXT_PUBLIC_NEST_API_BASE_URL ||
+  (process.env.NODE_ENV === "production"
+    ? "https://ox-game-backend.onrender.com"
+    : "http://localhost:3000");
 
 export const api = axios.create({
   baseURL: `${API_BASE_URL}/api/game`,
