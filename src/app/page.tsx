@@ -16,19 +16,9 @@ const SocialLoginButton: React.FC = () => {
   return (
     <a
       href={nestLoginUrl}
-      className="
-        group relative px-6 py-3
-        bg-linear-to-br from-green-500 to-emerald-500
-        text-white font-bold rounded-2xl
-        shadow-lg hover:shadow-xl
-        transition-all duration-300 ease-out
-        hover:scale-105 active:scale-95
-        overflow-hidden
-        flex items-center justify-center gap-2
-      "
+      className="inline-flex items-center justify-center rounded-2xl border border-teal-700 bg-teal-700 px-5 py-3 text-sm font-bold text-white shadow-[0_6px_16px_rgba(15,118,110,0.35)] hover:-translate-y-[1px] hover:bg-teal-800"
     >
-      <span className="relative z-10">Login with Google</span>
-      <div className="absolute inset-0 bg-linear-to-br from-green-600 to-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      Sign in with Google
     </a>
   );
 };
@@ -36,7 +26,6 @@ const SocialLoginButton: React.FC = () => {
 const HomePage = () => {
   const setToken = useGameStore((state) => state.setToken);
   const playerToken = useGameStore((state) => state.playerToken);
-  const gameStatus = useGameStore((state) => state.gameStatus);
   const resetGame = useGameStore((state) => state.resetGame);
 
   const [isTokenLoaded, setIsTokenLoaded] = useState(false);
@@ -59,19 +48,6 @@ const HomePage = () => {
     setIsTokenLoaded(true);
   }, [setToken]);
 
-  if (!isTokenLoaded) {
-    return (
-      <div className="min-h-screen bg-linear-to-br from-indigo-100 via-purple-50 to-pink-100 p-6 flex justify-center items-center">
-        <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl border border-white/40 p-8">
-          <div className="flex flex-col items-center gap-4">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gray-200 border-t-indigo-600"></div>
-            <p className="text-gray-600 font-medium">Loading...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   const handleLogout = () => {
     resetGame();
     setToken("");
@@ -79,88 +55,55 @@ const HomePage = () => {
     window.location.reload();
   };
 
+  if (!isTokenLoaded) {
+    return (
+      <main className="flex min-h-screen items-center justify-center p-6">
+        <div className="rounded-2xl border border-slate-200 bg-white px-5 py-4 text-sm font-medium text-slate-600 shadow-[0_8px_24px_rgba(15,23,42,0.08)]">
+          Loading game session...
+        </div>
+      </main>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-linear-to-br from-indigo-100 via-purple-50 to-pink-100 p-6">
-      <div className="max-w-7xl mx-auto mb-8">
-        <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl border border-white/40 p-6">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div className="text-center sm:text-left">
-              <h1 className="text-4xl sm:text-5xl font-extrabold bg-linear-to-br from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
-                OX Game WebApp
-              </h1>
-              <p className="text-gray-600 text-sm sm:text-base">
-                Play OX against AI and compete on the leaderboard.
+    <main className="min-h-screen px-4 py-6 sm:px-6 sm:py-8">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
+        <header className="rounded-3xl border border-slate-200 bg-[rgba(255,255,255,0.84)] p-5 shadow-[0_20px_48px_rgba(13,31,45,0.12)] backdrop-blur sm:p-7">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Browser Game</p>
+              <h1 className="text-4xl font-extrabold text-slate-900 sm:text-5xl">OX Game</h1>
+              <p className="mt-2 max-w-xl text-sm text-slate-600 sm:text-base">
+                A clean tic-tac-toe arena with live score tracking and leaderboard ranking.
               </p>
             </div>
             {playerToken ? (
               <button
                 onClick={handleLogout}
-                className="
-                  group relative px-6 py-3
-                  bg-linear-to-br from-red-500 to-pink-500
-                  text-white font-bold rounded-2xl
-                  shadow-lg hover:shadow-xl
-                  transition-all duration-300 ease-out
-                  hover:scale-105 active:scale-95
-                  overflow-hidden
-                "
+                className="inline-flex items-center justify-center rounded-2xl border border-rose-700 bg-rose-700 px-5 py-3 text-sm font-bold text-white shadow-[0_6px_16px_rgba(190,18,60,0.28)] hover:-translate-y-[1px] hover:bg-rose-800"
               >
-                <span className="relative z-10 flex items-center gap-2">
-                  Logout
-                </span>
-                <div className="absolute inset-0 bg-linear-to-br from-red-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                Sign out
               </button>
             ) : (
-              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                <SocialLoginButton />
-              </div>
+              <SocialLoginButton />
             )}
           </div>
-        </div>
-      </div>
+        </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-        <div className="lg:col-span-2 space-y-4">
-          <GameBoard />
-          <button
-            onClick={resetGame}
-            className={`
-              w-full py-4 px-6
-              font-bold text-lg rounded-2xl
-              shadow-lg
-              transition-all duration-300 ease-out
-              ${
-                gameStatus === "PLAYING" || !playerToken
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-linear-to-br from-blue-500 to-cyan-500 text-white hover:from-blue-600 hover:to-cyan-600 hover:shadow-xl hover:scale-105 active:scale-95"
-              }
-            `}
-            disabled={gameStatus === "PLAYING" || !playerToken}
-          >
-            {!playerToken
-              ? "Please login first"
-              : gameStatus === "PLAYING"
-                ? "Game in progress..."
-                : "Reset game"}
-          </button>
-        </div>
+        <section className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <GameBoard />
+          </div>
+          <div className="lg:col-span-1">
+            <Leaderboard />
+          </div>
+        </section>
 
-        <div className="lg:col-span-1">
-          <Leaderboard />
-        </div>
+        <footer className="rounded-2xl border border-slate-200 bg-[rgba(255,255,255,0.72)] px-4 py-3 text-center text-xs text-slate-500">
+          Built with Next.js + NestJS
+        </footer>
       </div>
-
-      <div className="max-w-7xl mx-auto mt-12">
-        <div className="bg-white/60 backdrop-blur-sm rounded-3xl shadow-lg border border-white/40 p-6 text-center">
-          <p className="text-gray-600 text-sm">
-            Built with Next.js and NestJS
-          </p>
-          <p className="text-gray-400 text-xs mt-2">
-            2026 OX Game WebApp
-          </p>
-        </div>
-      </div>
-    </div>
+    </main>
   );
 };
 

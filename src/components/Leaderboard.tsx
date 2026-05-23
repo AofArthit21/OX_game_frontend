@@ -21,7 +21,7 @@ const Leaderboard: React.FC = () => {
         setLeaderboard(response.data);
       } catch (err) {
         console.error("Failed to fetch leaderboard:", err);
-        setError("ไม่สามารถโหลดข้อมูลกระดานคะแนนได้");
+        setError("Could not load leaderboard.");
       } finally {
         setIsLoading(false);
       }
@@ -33,129 +33,75 @@ const Leaderboard: React.FC = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  const getMedalEmoji = (index: number) => {
-    if (index === 0) return "🥇";
-    if (index === 1) return "🥈";
-    if (index === 2) return "🥉";
-    return `${index + 1}.`;
+  const getRankLabel = (index: number) => {
+    if (index === 0) return "1st";
+    if (index === 1) return "2nd";
+    if (index === 2) return "3rd";
+    return `${index + 1}th`;
   };
 
   return (
-    <div className="bg-linear-to-br from-white via-yellow-50 to-orange-50 p-6 rounded-3xl shadow-2xl border border-yellow-100">
-      <div className="text-center mb-6">
-        <div className="text-5xl mb-2">🏆</div>
-        <h3 className="text-2xl font-extrabold bg-linear-to-br from-yellow-600 to-orange-600 bg-clip-text text-transparent">
-          กระดานคะแนน
-        </h3>
-        <p className="text-xs text-gray-500 mt-1">ผู้เล่นยอดเยี่ยม</p>
-      </div>
+    <aside className="rounded-3xl border border-slate-200 bg-[rgba(255,255,255,0.84)] p-5 shadow-[0_20px_48px_rgba(13,31,45,0.12)] backdrop-blur sm:p-6">
+      <header className="mb-5 border-b border-slate-200 pb-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Season Ranking</p>
+        <h3 className="mt-2 text-2xl font-extrabold text-slate-900">Leaderboard</h3>
+      </header>
 
       {isLoading && (
-        <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-10 w-10 border-4 border-gray-200 border-t-yellow-600"></div>
-          <p className="text-gray-500 mt-3 text-sm">กำลังโหลด...</p>
+        <div className="space-y-3">
+          <div className="h-14 animate-pulse rounded-2xl bg-slate-100"></div>
+          <div className="h-14 animate-pulse rounded-2xl bg-slate-100"></div>
+          <div className="h-14 animate-pulse rounded-2xl bg-slate-100"></div>
         </div>
       )}
 
       {error && (
-        <div className="bg-red-100 border border-red-300 rounded-2xl p-4 text-center">
-          <p className="text-red-700 text-sm">😞 {error}</p>
+        <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-800">
+          {error}
         </div>
       )}
 
-      {!isLoading && leaderboard.length === 0 && (
-        <div className="bg-gray-100 border border-gray-200 rounded-2xl p-8 text-center">
-          <div className="text-4xl mb-3">👻</div>
-          <p className="text-gray-500">ยังไม่มีผู้เล่น</p>
-          <p className="text-xs text-gray-400 mt-2">เป็นคนแรกที่ได้คะแนน!</p>
+      {!isLoading && !error && leaderboard.length === 0 && (
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-6 text-center text-sm text-slate-500">
+          No players yet.
         </div>
       )}
 
-      {!isLoading && leaderboard.length > 0 && (
-        <div className="space-y-3">
-          {leaderboard.map((entry, index) => (
-            <div
-              key={index}
-              className={`
-                relative overflow-hidden
-                p-4 rounded-2xl
-                transition-all duration-300 ease-out
-                hover:scale-102 hover:shadow-lg
-                ${
-                  index === 0
-                    ? "bg-linear-to-br from-yellow-400 to-orange-400 shadow-lg border-2 border-yellow-500"
-                    : index === 1
-                    ? "bg-linear-to-br from-gray-300 to-gray-400 shadow-md border-2 border-gray-400"
-                    : index === 2
-                    ? "bg-linear-to-br from-orange-300 to-amber-400 shadow-md border-2 border-orange-400"
-                    : "bg-white shadow-sm border border-gray-200"
-                }
-              `}
-            >
-              <div className="flex items-center justify-between relative z-10">
-                <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <span
-                    className={`
-                    text-2xl font-bold
-                    ${index < 3 ? "text-white drop-shadow-md" : "text-gray-500"}
-                  `}
-                  >
-                    {getMedalEmoji(index)}
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <p
-                      className={`
-                      font-bold truncate
-                      ${
-                        index < 3
-                          ? "text-white text-lg drop-shadow"
-                          : "text-gray-800"
-                      }
-                    `}
+      {!isLoading && !error && leaderboard.length > 0 && (
+        <div className="space-y-2.5">
+          {leaderboard.map((entry, index) => {
+            const isTop = index < 3;
+            return (
+              <div
+                key={`${entry.displayName}-${index}`}
+                className={`flex items-center justify-between rounded-2xl border px-3 py-3 ${
+                  isTop ? "border-teal-200 bg-teal-50/70" : "border-slate-200 bg-white"
+                }`}
+              >
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-xs font-bold ${
+                        isTop ? "bg-teal-700 text-white" : "bg-slate-200 text-slate-700"
+                      }`}
                     >
-                      {entry.displayName}
-                    </p>
-                    {entry.consecutiveWins > 0 && (
-                      <p
-                        className={`
-                        text-xs mt-1
-                        ${index < 3 ? "text-white/90" : "text-gray-600"}
-                      `}
-                      >
-                        🔥 ชนะติดต่อกัน {entry.consecutiveWins} ครั้ง
-                      </p>
-                    )}
+                      {getRankLabel(index)}
+                    </span>
+                    <p className="truncate text-sm font-bold text-slate-900">{entry.displayName}</p>
                   </div>
+                  <p className="mt-1 text-xs text-slate-500">Streak: {entry.consecutiveWins}</p>
                 </div>
-                <div
-                  className={`
-                  px-4 py-2 rounded-xl font-bold text-lg
-                  ${
-                    index < 3
-                      ? "bg-white/30 text-white shadow-md"
-                      : "bg-indigo-100 text-indigo-700"
-                  }
-                `}
-                >
+                <div className="rounded-xl bg-slate-900 px-3 py-1.5 text-sm font-extrabold text-white">
                   {entry.totalScore}
                 </div>
               </div>
-
-              {index < 3 && (
-                <div className="absolute inset-0 bg-linear-to-br from-transparent via-white/20 to-transparent animate-shimmer" />
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
-      <div className="mt-6 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/70 backdrop-blur-sm rounded-full border border-gray-200">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-          <p className="text-xs text-gray-600">อัปเดตทุก 5 นาที</p>
-        </div>
-      </div>
-    </div>
+      <p className="mt-5 text-center text-xs text-slate-500">Auto-refresh every 60 seconds</p>
+    </aside>
   );
 };
 
